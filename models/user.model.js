@@ -7,13 +7,13 @@ const userSchema = new mongoose.Schema({
     description: String,
     imageUrl: String,
     price: Number,
-    supporters: [mongoose.Types.ObjectId],
-    supportedTo: [mongoose.Types.ObjectId],
-    mySupports: [mongoose.Types.ObjectId],
+    supporters: [{ type: mongoose.Types.ObjectId }],
+    supportedTo: [{ type: mongoose.Types.ObjectId }],
+    mySupports: [{ type: mongoose.Types.ObjectId }],
     socials: [String],
-    myPosts: [mongoose.Types.ObjectId],
-    myPolls: [mongoose.Types.ObjectId],
-    polledTo: [mongoose.Types.ObjectId]
+    myPosts: [{ type: mongoose.Types.ObjectId }],
+    myPolls: [{ type: mongoose.Types.ObjectId }],
+    polledTo: [{ type: mongoose.Types.ObjectId }]
 })
 
 module.exports = new mongoose.model("User", userSchema)
