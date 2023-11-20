@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     imageUrl: String,
     price: Number,
     supporters: [{ type: mongoose.Types.ObjectId }],
-    supportedTo: [{ type: mongoose.Types.ObjectId }],
+    supportedenvTo: [{ type: mongoose.Types.ObjectId }],
     mySupports: [{ type: mongoose.Types.ObjectId }],
     socials: [String],
     myPosts: [{ type: mongoose.Types.ObjectId }],
