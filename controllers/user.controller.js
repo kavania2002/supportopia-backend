@@ -1,4 +1,4 @@
-const userService = require('../services/user.service'); // Make sure the path is correct
+const userService = require('../services/user.service');
 
 const UserController = {
   register: async (req, res) => {
