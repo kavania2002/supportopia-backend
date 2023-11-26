@@ -8,18 +8,20 @@ require("./utils/database.utils").connect();
 
 const express = require('express')
 const cors = require('cors')
+const logRequest = require('./middlewares/request.middleware');
+
 const bodyParser = require('body-parser')
 const app = express()
 
-app.use(
-  cors(),
+app.use((req, res, next) => {
+  cors()
   express.json()
-)
+  logRequest(req, res, next)
+})
 
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/ping', (req, res) => {
-  console.log(`${req.method}: ${req.originalUrl}`)
   res.send('Hello World!')
 })
 
