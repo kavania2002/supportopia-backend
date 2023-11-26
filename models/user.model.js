@@ -11,7 +11,14 @@ const userSchema = new mongoose.Schema({
     supporters: [{ type: mongoose.Types.ObjectId }],
     supportedenvTo: [{ type: mongoose.Types.ObjectId }],
     mySupports: [{ type: mongoose.Types.ObjectId }],
-    socials: [String],
+    socials: [{
+        "twitter": String,
+        "pinterest": String,
+        "medium": String,
+        "linkedin": String,
+        "youtube": String,
+        "instagram": String
+    }],
     myPosts: [{ type: mongoose.Types.ObjectId }],
     myPolls: [{ type: mongoose.Types.ObjectId }],
     polledTo: [{ type: mongoose.Types.ObjectId }]

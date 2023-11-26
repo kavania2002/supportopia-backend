@@ -41,7 +41,6 @@ const register = async ({ name, username, email, password }) => {
 };
 
 const login = async (req) => {
-  console.log('login function called');
   const authHeader = req.headers.authorization;
   const { username, email, password } = req.body;
 
