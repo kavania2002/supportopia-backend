@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+
 const PORT = process.env.PORT || 8000
 
 // connect to the database
@@ -9,6 +10,7 @@ const express = require('express')
 const cors = require('cors')
 const logRequest = require('./middlewares/request.middleware');
 
+const bodyParser = require('body-parser')
 const app = express()
 
 app.use((req, res, next) => {
@@ -16,6 +18,8 @@ app.use((req, res, next) => {
   express.json()
   logRequest(req, res, next)
 })
+
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/ping', (req, res) => {
   res.send('Hello World!')
