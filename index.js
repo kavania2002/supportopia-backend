@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+
 const PORT = process.env.PORT || 8000
 
 // connect to the database
@@ -7,13 +8,15 @@ require("./utils/database.utils").connect();
 
 const express = require('express')
 const cors = require('cors')
-
+const bodyParser = require('body-parser')
 const app = express()
 
 app.use(
   cors(),
   express.json()
 )
+
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/ping', (req, res) => {
   console.log(`${req.method}: ${req.originalUrl}`)
