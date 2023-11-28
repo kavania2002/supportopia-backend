@@ -116,7 +116,7 @@ const login = async (req) => {
 
 const image = async (req,res) => {
   console.log('image function called');
-  const userId = req.params.id; 
+  const userId = req.user.id; 
   // console.log(userId);
     upload.single("image")(req, res, async (err) => {
       if (err) {
@@ -142,6 +142,66 @@ const image = async (req,res) => {
       return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
   })};
+
+
+
+  const getUser = async (req) => {
+    try {
+      const name = req.params.username;
+      const user = await User.findOne({ username: name });
+      
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      if(user._id == req.user.id){
+        return {
+          message: 'You cannot view your own profile',
+        };
+      }
+  
+      // Extracting relevant fields from the user object
+      const {
+        username,
+        price,
+        description,
+        socials,
+        myPolls,
+        myPosts,
+        supporters,
+      } = user;
+      
+      // Extracting the number of supporters
+      const numberOfSupporters = supporters.length;
+
+      // Extracting only the recent 5 supporters
+      const recentSupporters = supporters.slice(0, 5);
+  
+      // Creating the response object
+      const response = {
+        data: {
+          username,
+          membershipPrice: price,
+          description,
+          socials,
+          polls: myPolls,
+          posts: myPosts,
+          numberOfSupporters,
+          supporters: recentSupporters,
+        },
+        message: 'User found',
+      };
+  
+      return response;
+    } catch (error) {
+      // Handle errors here
+      console.error(`Error in getUser: ${error.message}`);
+      throw error; // Re-throw the error for the calling code to handle if needed
+    }
+  };
+  
+  
+
 
 const name = async (req,res) => {
   console.log('name function called');
@@ -183,5 +243,5 @@ const description = async (req,res) => {
   }
 }
 
-module.exports = {register, login, image, name, description};
+module.exports = {register, login, image, name, description, getUser};
 
