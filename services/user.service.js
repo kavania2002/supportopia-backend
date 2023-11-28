@@ -204,14 +204,13 @@ const image = async (req,res) => {
 
 
 const name = async (req,res) => {
-  console.log('name function called');
   const userId = req.user.id; 
   // console.log(userId);
   const {name} = req.body;
   // console.log(name);
   try {
     const result = await User.findByIdAndUpdate(userId, { username: name });
-    console.log(result);
+    // console.log(result);
     if (result) {
       return res.json({ message: 'Name updated successfully.' });
     } else {
@@ -224,7 +223,7 @@ const name = async (req,res) => {
 }
 
 const description = async (req,res) => {
-  console.log('description function called');
+  // console.log('description function called');
   const userId = req.user.id; 
   // console.log(userId);
   const {description} = req.body;

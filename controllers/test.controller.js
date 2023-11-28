@@ -2,8 +2,6 @@ const TestService = require('../services/test.service')
 
 const TestController = {
   getValues: async (req, res) => {
-    console.log(`${req.method}: ${req.originalUrl}`)
-
     try {
       const result = await TestService.getValues()
       res.json({ data: result, message: 'Values Received' })
