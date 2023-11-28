@@ -143,4 +143,25 @@ const image = async (req,res) => {
     }
   })};
 
-module.exports = {register, login, image};
+const name = async (req,res) => {
+  console.log('name function called');
+  const userId = req.user.id; 
+  // console.log(userId);
+  const {name} = req.body;
+  // console.log(name);
+  try {
+    const result = await User.findByIdAndUpdate(userId, { username: name });
+    console.log(result);
+    if (result) {
+      return res.json({ message: 'Name updated successfully.' });
+    } else {
+      return res.status(500).json({ message: 'Name update failed.' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+}
+
+module.exports = {register, login, image, name};
+

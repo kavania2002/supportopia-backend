@@ -19,7 +19,7 @@ const UserController = {
     }
   },
 
-   image: async (req, res) => {
+  image: async (req, res) => {
     try {
       console.log(req.params.id);
       // const id = req.params.id;
@@ -30,6 +30,19 @@ const UserController = {
       res.status(400).json({ message: err.message });
     }
   },
+
+  name: async (req, res) => {
+    try {
+      console.log(req.body);
+      // const id = req.params.id;
+      await userService.name(req, res);
+      // res.json(result);
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ message: err.message });
+    }
+  },
+
 };
 
 module.exports = UserController;
