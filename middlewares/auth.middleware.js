@@ -2,14 +2,14 @@ const jwt = require('jsonwebtoken');
 
 const authenticateUser = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  console.log(authHeader);
+  // console.log(authHeader);
   if (authHeader) {
     const token = authHeader.split(' ')[1];
-    console.log("printing from auth.middleware", token);
+    // console.log("printing from auth.middleware", token);
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = decoded;
-      console.log(decoded);
+      // console.log(decoded);
       next();
     } catch (err) {
       console.error('Invalid token');

@@ -21,13 +21,19 @@ const UserController = {
 
    image: async (req, res) => {
     try {
-      console.log(req.params.id);
-      // const id = req.params.id;
       await userService.image(req, res);
-      // res.json(result);
     } catch (err) {
       console.log(err);
       res.status(400).json({ message: err.message });
+    }
+  },
+
+  getUser: async (req, res) => {
+    try {
+      const result = await userService.getUser(req);
+      res.json(result);
+    } catch (err) {
+      res.status(400).json({ message: err });
     }
   },
 };
