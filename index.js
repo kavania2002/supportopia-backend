@@ -1,6 +1,4 @@
 require('dotenv').config()
-
-
 const PORT = process.env.PORT || 8000
 
 // connect to the database
@@ -13,9 +11,12 @@ const logRequest = require('./middlewares/request.middleware');
 const bodyParser = require('body-parser')
 const app = express()
 
-app.use((req, res, next) => {
-  cors()
+app.use(
+  cors(),
   express.json()
+)
+
+app.use((req, res, next) => {
   logRequest(req, res, next)
 })
 
