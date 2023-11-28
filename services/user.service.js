@@ -209,7 +209,7 @@ const name = async (req,res) => {
   const {name} = req.body;
   // console.log(name);
   try {
-    const result = await User.findByIdAndUpdate(userId, { username: name });
+    const result = await User.findByIdAndUpdate(userId, { name: name });
     // console.log(result);
     if (result) {
       return res.json({ message: 'Name updated successfully.' });
