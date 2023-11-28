@@ -5,6 +5,7 @@ const {upload} = require('../utils/s3.utils');
 
 const register = async ({ name, username, email, password }) => {
   const userExists = await User.findOne({ $or: [{ username }, { email }] });
+  // console.log("userExists", userExists);
 
   if (userExists) {
     throw 'Username or email already exists';
@@ -17,6 +18,9 @@ const register = async ({ name, username, email, password }) => {
     username,
     email,
     password: hashedPassword,
+    description: "",
+    imageUrl: "",
+    price: 0,
   });
 
   await user.save();
@@ -98,7 +102,8 @@ const login = async (req) => {
       }
   
       const newToken = jwt.sign({ id: user._id, name: user.name, username: user.username, email: user.email,}, process.env.JWT_SECRET, { expiresIn: '1h' });
-      console.log(newToken);
+      // console.log(newToken);
+      console.log("New Token Generated");
       return {
         data: {
           user,
