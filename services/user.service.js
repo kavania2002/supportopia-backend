@@ -163,5 +163,25 @@ const name = async (req,res) => {
   }
 }
 
-module.exports = {register, login, image, name};
+const description = async (req,res) => {
+  console.log('description function called');
+  const userId = req.user.id; 
+  // console.log(userId);
+  const {description} = req.body;
+  // console.log(description);
+  try {
+    const result = await User.findByIdAndUpdate(userId, { description: description });
+    console.log(result);
+    if (result) {
+      return res.json({ message: 'Description updated successfully.' });
+    } else {
+      return res.status(500).json({ message: 'Description update failed.' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+}
+
+module.exports = {register, login, image, name, description};
 

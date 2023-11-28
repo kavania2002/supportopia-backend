@@ -43,6 +43,18 @@ const UserController = {
     }
   },
 
+  description: async (req, res) => {
+    try {
+      console.log(req.body);
+      // const id = req.params.id;
+      await userService.description(req, res);
+      // res.json(result);
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ message: err.message });
+    }
+  },
+
 };
 
 module.exports = UserController;
