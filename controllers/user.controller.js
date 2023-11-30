@@ -58,6 +58,15 @@ const UserController = {
       res.status(400).json({ message: err });
     }
   },
+
+  updatePrice: async (req, res) => {
+    try {
+      const result = await userService.updatePrice(req.user.id, req.body);
+      res.json({ data: result, message: 'Price updated successfully' })
+    } catch (err) {
+      res.status(400).json({ message: err });
+    }
+  }
 };
 
 module.exports = UserController;

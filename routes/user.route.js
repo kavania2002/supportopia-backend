@@ -9,5 +9,6 @@ router.post('/name', authenticateUser, UserController.name);
 router.post('/description', authenticateUser, UserController.description);
 router.post('/image', authenticateUser ,UserController.image);
 router.get('/:username', authenticateUser, UserController.getUser);
+router.post('/price', authenticateUser, UserController.updatePrice);
 
 module.exports = router;

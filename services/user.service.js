@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
-const {upload} = require('../utils/s3.utils');
+const { upload } = require('../utils/s3.utils');
 
 const register = async ({ name, username, email, password }) => {
   const userExists = await User.findOne({ $or: [{ username }, { email }] });
@@ -51,78 +51,78 @@ const login = async (req) => {
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // console.log(decoded);
-        const user = await User.findById(decoded.id);
-        // console.log(user);
-        if (!user) {
-          console.log('user not found');
-          throw 'User not found';
-        }
-        req.user = user;
-  
-        return {
-          data: {
-            user,
-            token,
-          },
-          message: 'User logged in',
-        };
-      } catch (err) {
-          if (err.name === 'TokenExpiredError') {
-            const decoded = jwt.decode(token);
-            const user = await User.findById(decoded.id);
-    
-            if (!user || user.username !== username || !await bcrypt.compare(password, user.password)) {
-              throw 'Invalid username or password';
-            }
-    
-            const newToken = jwt.sign({ id: user._id, name: user.name, username: user.username, email: user.email,}, process.env.JWT_SECRET, { expiresIn: '1h' });
-            req.user = user;
-            return {
-              data: {
-                user,
-                newToken,
-              },
-              message: 'User logged in',
-            };
-          }
-    
-          throw 'Invalid token';
-        }
-      } 
-  else if ((username || email) && password) {
-      const user = await User.findOne({ $or: [{ username }, { email }] });
-
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // console.log(decoded);
+      const user = await User.findById(decoded.id);
       // console.log(user);
-      if (!user || !await bcrypt.compare(password, user.password)) {
-        console.log('Invalid username/email or password');
-        throw 'Invalid username/email or password';
+      if (!user) {
+        console.log('user not found');
+        throw 'User not found';
       }
-  
-      const newToken = jwt.sign({ id: user._id, name: user.name, username: user.username, email: user.email,}, process.env.JWT_SECRET, { expiresIn: '1h' });
-      // console.log(newToken);
-      console.log("New Token Generated");
+      req.user = user;
+
       return {
         data: {
           user,
-          tokegtn: newToken,
+          token,
         },
         message: 'User logged in',
+      };
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        const decoded = jwt.decode(token);
+        const user = await User.findById(decoded.id);
+
+        if (!user || user.username !== username || !await bcrypt.compare(password, user.password)) {
+          throw 'Invalid username or password';
+        }
+
+        const newToken = jwt.sign({ id: user._id, name: user.name, username: user.username, email: user.email, }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        req.user = user;
+        return {
+          data: {
+            user,
+            newToken,
+          },
+          message: 'User logged in',
+        };
+      }
+
+      throw 'Invalid token';
+    }
+  }
+  else if ((username || email) && password) {
+    const user = await User.findOne({ $or: [{ username }, { email }] });
+
+    // console.log(user);
+    if (!user || !await bcrypt.compare(password, user.password)) {
+      console.log('Invalid username/email or password');
+      throw 'Invalid username/email or password';
+    }
+
+    const newToken = jwt.sign({ id: user._id, name: user.name, username: user.username, email: user.email, }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // console.log(newToken);
+    console.log("New Token Generated");
+    return {
+      data: {
+        user,
+        tokegtn: newToken,
+      },
+      message: 'User logged in',
     };
   }
 };
 
-const image = async (req,res) => {
+const image = async (req, res) => {
   console.log('image function called');
-  const userId = req.user.id; 
+  const userId = req.user.id;
   // console.log(userId);
-    upload.single("image")(req, res, async (err) => {
-      if (err) {
-        console.log(err);
-        return res.status(400).json({ message: err, error: "Image upload failed." });
-      } 
+  upload.single("image")(req, res, async (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ message: err, error: "Image upload failed." });
+    }
 
     const image_url = (req.file.location);
     // console.log(req);
@@ -141,72 +141,73 @@ const image = async (req,res) => {
       console.error(error);
       return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  })};
+  })
+};
 
 
 
-  const getUser = async (req) => {
-    try {
-      const name = req.params.username;
-      const user = await User.findOne({ username: name });
-      
-      if (!user) {
-        throw new Error('User not found');
-      }
+const getUser = async (req) => {
+  try {
+    const name = req.params.username;
+    const user = await User.findOne({ username: name });
 
-      if(user._id == req.user.id){
-        return {
-          message: 'You cannot view your own profile',
-        };
-      }
-  
-      // Extracting relevant fields from the user object
-      const {
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (user._id == req.user.id) {
+      return {
+        message: 'You cannot view your own profile',
+      };
+    }
+
+    // Extracting relevant fields from the user object
+    const {
+      username,
+      price,
+      description,
+      socials,
+      myPolls,
+      myPosts,
+      supporters,
+    } = user;
+
+    // Extracting the number of supporters
+    const numberOfSupporters = supporters.length;
+
+    // Extracting only the recent 5 supporters
+    const recentSupporters = supporters.slice(0, 5);
+
+    // Creating the response object
+    const response = {
+      data: {
         username,
-        price,
+        membershipPrice: price,
         description,
         socials,
-        myPolls,
-        myPosts,
-        supporters,
-      } = user;
-      
-      // Extracting the number of supporters
-      const numberOfSupporters = supporters.length;
+        polls: myPolls,
+        posts: myPosts,
+        numberOfSupporters,
+        supporters: recentSupporters,
+      },
+      message: 'User found',
+    };
 
-      // Extracting only the recent 5 supporters
-      const recentSupporters = supporters.slice(0, 5);
-  
-      // Creating the response object
-      const response = {
-        data: {
-          username,
-          membershipPrice: price,
-          description,
-          socials,
-          polls: myPolls,
-          posts: myPosts,
-          numberOfSupporters,
-          supporters: recentSupporters,
-        },
-        message: 'User found',
-      };
-  
-      return response;
-    } catch (error) {
-      // Handle errors here
-      console.error(`Error in getUser: ${error.message}`);
-      throw error; // Re-throw the error for the calling code to handle if needed
-    }
-  };
-  
-  
+    return response;
+  } catch (error) {
+    // Handle errors here
+    console.error(`Error in getUser: ${error.message}`);
+    throw error; // Re-throw the error for the calling code to handle if needed
+  }
+};
 
 
-const name = async (req,res) => {
-  const userId = req.user.id; 
+
+
+const name = async (req, res) => {
+  const userId = req.user.id;
   // console.log(userId);
-  const {name} = req.body;
+  const { name } = req.body;
   // console.log(name);
   try {
     const result = await User.findByIdAndUpdate(userId, { name: name });
@@ -222,15 +223,14 @@ const name = async (req,res) => {
   }
 }
 
-const description = async (req,res) => {
+const description = async (req, res) => {
   // console.log('description function called');
-  const userId = req.user.id; 
+  const userId = req.user.id;
   // console.log(userId);
-  const {description} = req.body;
+  const { description } = req.body;
   // console.log(description);
   try {
     const result = await User.findByIdAndUpdate(userId, { description: description });
-    console.log(result);
     if (result) {
       return res.json({ message: 'Description updated successfully.' });
     } else {
@@ -242,5 +242,16 @@ const description = async (req,res) => {
   }
 }
 
-module.exports = {register, login, image, name, description, getUser};
+const updatePrice = async (userId, data) => {
+  try {
+    const result = await User.findByIdAndUpdate(userId, { price: data.price });
+    console.log(result);
+    return result
+  } catch (error) {
+    console.error(error);
+    throw new Error(error)
+  }
+}
+
+module.exports = { register, login, image, name, description, getUser, updatePrice };
 
