@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     password: String,
     description: String,
     imageUrl: String,
-    price: Number,
+    price: {type: Number, default: 0},
     supporters: [{ type: mongoose.Types.ObjectId }],
     supportedenvTo: [{ type: mongoose.Types.ObjectId }],
     mySupports: [{ type: mongoose.Types.ObjectId }],
