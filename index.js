@@ -1,6 +1,4 @@
 require('dotenv').config()
-
-
 const PORT = process.env.PORT || 8000
 
 // connect to the database
@@ -14,9 +12,12 @@ const bodyParser = require('body-parser')
 const app = express()
 app.use(bodyParser.json())
 
-app.use((req, res, next) => {
-  cors()
+app.use(
+  cors(),
   express.json()
+)
+
+app.use((req, res, next) => {
   logRequest(req, res, next)
 })
 
