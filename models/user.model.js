@@ -8,9 +8,9 @@ const userSchema = new mongoose.Schema({
     description: String,
     imageUrl: String,
     price: Number,
-    supporters: [{ type: mongoose.Types.ObjectId }],
-    supportedenvTo: [{ type: mongoose.Types.ObjectId }],
-    mySupports: [{ type: mongoose.Types.ObjectId }],
+    supporters: [],
+    supportedenvTo: [],
+    mySupports: [],
     socials: [{
         "twitter": String,
         "pinterest": String,

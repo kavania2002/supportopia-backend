@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const {upload} = require('../utils/s3.utils');
-
+const jwtSevices = require('../utils/jwt.utils')
 const register = async ({ name, username, email, password }) => {
   const userExists = await User.findOne({ $or: [{ username }, { email }] });
 
@@ -31,6 +31,7 @@ const register = async ({ name, username, email, password }) => {
     process.env.JWT_SECRET,
     { expiresIn: '1h' }
   );
+
 
   return {
     data: {
@@ -138,4 +139,20 @@ const image = async (req,res) => {
     }
   })};
 
-module.exports = {register, login, image};
+
+  const creatorsTop = async (req, res) => {
+    try {
+      const result = await User.find({});
+
+      const DataofTop10 = result.sort((a, b) => b.supporters.length - a.supporters.length).slice(0, 10);
+
+      return {
+        data : DataofTop10,
+        message: 'Top 10 creators'
+      };
+    } catch (err) {
+      throw err;
+    }
+  };  
+
+module.exports = {register, login, image,creatorsTop};
