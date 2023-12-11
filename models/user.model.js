@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     }],
     myPosts: [{ type: mongoose.Schema.Types.ObjectId }],
     myPolls: [{ type: mongoose.Schema.Types.ObjectId }],
-    polledTo: [{ type: mongoose.Schema..Types.ObjectId }]
+    polledTo: [{ type: mongoose.Schema.Types.ObjectId }]
 })
 
 module.exports = new mongoose.model("User", userSchema)
