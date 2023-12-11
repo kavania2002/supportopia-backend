@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 
 const pollSchema = new mongoose.Schema({
     creatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    questions: [String],
+    question: String,
+    options: [String],
     votes: [
         [
             { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
