@@ -368,7 +368,7 @@ const creatorStats = async (userId) => {
         path: "supporters",
         populate: {
           path: "userId",
-          select: "_id name username email description imageUrl",
+          select: "_id name username email description imageUrl socials",
         },
       })
       .populate({ path: "mySupports", select: "price number" });
@@ -379,6 +379,7 @@ const creatorStats = async (userId) => {
       description: creator.description,
       imageUrl: creator.imageUrl,
       price: creator.price,
+      socials: creator.socials, 
       supporters: creator.supporters,
       numberOfCoffee: creator.mySupports.length,
       totalMembers: creator.supporters.length,

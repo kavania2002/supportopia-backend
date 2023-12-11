@@ -21,15 +21,15 @@ const userSchema = new mongoose.Schema({
   supportedTo: [],
 
   // all the transactions done on creator itself
-  mySupports: [{type: mongoose.Schema.Types.ObjectId, ref: 'Support'}],
+  mySupports: [{ type: mongoose.Schema.Types.ObjectId, ref: "Support" }],
 
   socials: {
-    twitter: String,
-    pinterest: String,
-    medium: String,
-    linkedin: String,
-    youtube: String,
-    instagram: String,
+    twitter: { type: String, default: "" },
+    pinterest: { type: String, default: "" },
+    medium: { type: String, default: "" },
+    linkedin: { type: String, default: "" },
+    youtube: { type: String, default: "" },
+    instagram: { type: String, default: "" },
   },
   myPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   myPolls: [{ type: mongoose.Schema.Types.ObjectId, ref: "Poll" }],
