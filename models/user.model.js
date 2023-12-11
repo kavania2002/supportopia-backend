@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   // list of supporters supporting me with their expiry of support
   supporters: [
     {
-      userId: { type: mongoose.Schema.Types.ObjectId },
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       expiry: Date,
     },
   ],
