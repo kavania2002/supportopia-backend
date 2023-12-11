@@ -195,7 +195,23 @@ const getLimitedUserDetails = async (user) => {
 const getUser = async (req) => {
   try {
     const name = req.params.username;
-    const user = await User.findOne({ username: name });
+    const user = await User.findOne({ username: name })
+      .populate({
+        path: "myPolls",
+      })
+      .populate({
+        path: "myPosts",
+        populate: {
+          path: "comments",
+        }
+      })
+      .populate({
+        path: "supporters",
+        populate: {
+          path: "userId",
+          select: "_id name username email imageUrl"
+        },
+      });
 
     if (!user) {
       throw new Error("User not found");
@@ -217,7 +233,7 @@ const getUser = async (req) => {
           isMember = true;
         }
         user.supporters.forEach((supporter) => {
-          if (supporter.userId == req.user.id) {
+          if (supporter.userId._id == req.user.id) {
             isMember = true;
           }
         });
