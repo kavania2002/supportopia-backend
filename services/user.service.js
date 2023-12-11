@@ -108,7 +108,6 @@ const login = async (req) => {
   } else if ((username || email) && password) {
     const user = await User.findOne({ $or: [{ username }, { email }] });
 
-    
     if (!user || !(await bcrypt.compare(password, user.password))) {
       console.log("Invalid username/email or password");
       throw "Invalid username/email or password";
@@ -189,14 +188,9 @@ const creatorsTop = async (req, res) => {
   }
 };
 
-const getLimitedUserDetails =  async (user) => {
-  return {
-    username,
-    price, 
-    description,
-    socials
-  } = user;
-} 
+const getLimitedUserDetails = async (user) => {
+  return ({ username, price, description, socials } = user);
+};
 
 const getUser = async (req) => {
   try {
@@ -208,7 +202,7 @@ const getUser = async (req) => {
     }
 
     let isMember = false;
-    
+
     const authHeader = req.headers.authorization;
     // console.log(authHeader);
     if (authHeader) {
@@ -320,32 +314,67 @@ const description = async (req, res) => {
 const updateProfile = async (req) => {
   const userId = req.user.id;
 
-  const {name, description, socials, price} = req.body;
+  const { name, description, socials, price } = req.body;
 
   try {
     const result = await User.findByIdAndUpdate(userId, {
       name: name,
       description: description,
       price: price,
-      socials : socials
-    })
+      socials: socials,
+    });
 
     if (result) {
       return {
-        message: 'Profile Updated'
-      }
+        message: "Profile Updated",
+      };
     } else {
       return {
-        message: 'Error Updating Profile'
-      }
+        message: "Error Updating Profile",
+      };
     }
   } catch (error) {
     console.error(error);
     return {
-      message: error
-    }
+      message: error,
+    };
   }
-}
+};
+
+const creatorStats = async (userId) => {
+  try {
+    const creator = await User.findById(userId)
+      .populate({ path: "supporters", populate: { path: "userId", select: '_id name username email description imageUrl' } })
+      .populate({ path: "mySupports", select: 'price number' });
+
+    let creatorInfo = {
+      name: creator.name,
+      username: creator.username,
+      description: creator.description,
+      imageUrl: creator.imageUrl,
+      price: creator.price,
+      supporters: creator.supporters,
+      numberOfCoffee: creator.mySupports.length,
+      totalMembers: creator.supporters.length,
+    };
+
+    let totalRevenue = 0;
+    for (let i = 0; i < creator.mySupports.length; i++) {
+      totalRevenue +=
+        creator.mySupports[i].price * creator.mySupports[i].number;
+    }
+
+    creatorInfo = { ...creatorInfo, totalRevenue: totalRevenue };
+
+    return {
+      data: creatorInfo,
+      message: "Creator Stats Fetched",
+    };
+  } catch (error) {
+    console.error(error);
+    throw new Error(error);
+  }
+};
 
 module.exports = {
   register,
@@ -355,5 +384,6 @@ module.exports = {
   name,
   description,
   getUser,
-  updateProfile
+  updateProfile,
+  creatorStats,
 };

@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   supportedTo: [],
 
   // all the transactions done on creator itself
-  mySupports: [],
+  mySupports: [{type: mongoose.Schema.Types.ObjectId, ref: 'Support'}],
 
   socials: {
     twitter: String,

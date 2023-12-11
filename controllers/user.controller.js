@@ -1,4 +1,4 @@
-const userService = require('../services/user.service');
+const userService = require("../services/user.service");
 
 const UserController = {
   register: async (req, res) => {
@@ -50,7 +50,6 @@ const UserController = {
     }
   },
 
-
   description: async (req, res) => {
     try {
       // const id = req.params.id;
@@ -72,12 +71,21 @@ const UserController = {
   },
   updateProfile: async (req, res) => {
     try {
-      const result =  await userService.updateProfile(req);
+      const result = await userService.updateProfile(req);
       res.json(result);
     } catch (error) {
-      res.status(400).json({message: error});
+      res.status(400).json({ message: error });
     }
-  }
+  },
+  creatorStats: async (req, res) => {
+    try {
+      const result = await userService.creatorStats(req.user.id);
+      res.json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(400).json({ message: error });
+    }
+  },
 };
 
 module.exports = UserController;
