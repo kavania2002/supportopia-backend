@@ -10,6 +10,7 @@ const logRequest = require('./middlewares/request.middleware');
 
 const bodyParser = require('body-parser')
 const app = express()
+app.use(bodyParser.json())
 
 app.use(
   cors(),
@@ -20,9 +21,10 @@ app.use((req, res, next) => {
   logRequest(req, res, next)
 })
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended:true}));
 
 app.get('/ping', (req, res) => {
+  console.log(req.body);
   res.send('Hello World!')
 })
 

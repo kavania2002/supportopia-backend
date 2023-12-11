@@ -38,6 +38,18 @@ const UserController = {
       res.status(400).json({ message: err.message });
     }
   },
+  creatorsTop: async (req, res) => {
+    try {
+      console.log(req.body);
+      const result = await userService.creatorsTop(req, res);
+      console.log(result);
+      res.json(result);
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ message: err });
+    }
+  },
+
 
   description: async (req, res) => {
     try {

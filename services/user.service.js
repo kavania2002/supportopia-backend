@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const {upload} = require('../utils/s3.utils');
+const jwtSevices = require('../utils/jwt.utils')
 
 const register = async ({ name, username, email, password }) => {
   const userExists = await User.findOne({ $or: [{ username }, { email }] });
@@ -35,6 +36,7 @@ const register = async ({ name, username, email, password }) => {
     process.env.JWT_SECRET,
     { expiresIn: '1h' }
   );
+
 
   return {
     data: {
@@ -141,68 +143,81 @@ const image = async (req,res) => {
       console.error(error);
       return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  })};
+  })
+};
 
 
+const creatorsTop = async (req, res) => {
+  try {
+    const result = await User.find({});
 
-  const getUser = async (req) => {
-    try {
-      const name = req.params.username;
-      const user = await User.findOne({ username: name });
-      
-      if (!user) {
-        throw new Error('User not found');
-      }
+    const DataofTop10 = result.sort((a, b) => b.supporters.length - a.supporters.length).slice(0, 10);
 
-      if(user._id == req.user.id){
-        return {
-          message: 'You cannot view your own profile',
-        };
-      }
+    return {
+      data : DataofTop10,
+      message: 'Top 10 creators'
+    };
+  } catch (err) {
+    throw err;
+  }
+};  
   
-      // Extracting relevant fields from the user object
-      const {
+  
+const getUser = async (req) => {
+  try {
+    const name = req.params.username;
+    const user = await User.findOne({ username: name });
+    
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if(user._id == req.user.id){
+      return {
+        message: 'You cannot view your own profile',
+      };
+    }
+
+    // Extracting relevant fields from the user object
+    const {
+      username,
+      price,
+      description,
+      socials,
+      myPolls,
+      myPosts,
+      supporters,
+    } = user;
+    
+    // Extracting the number of supporters
+    const numberOfSupporters = supporters.length;
+
+    // Extracting only the recent 5 supporters
+    const recentSupporters = supporters.slice(0, 5);
+
+    // Creating the response object
+    const response = {
+      data: {
         username,
-        price,
+        membershipPrice: price,
         description,
         socials,
-        myPolls,
-        myPosts,
-        supporters,
-      } = user;
-      
-      // Extracting the number of supporters
-      const numberOfSupporters = supporters.length;
+        polls: myPolls,
+        posts: myPosts,
+        numberOfSupporters,
+        supporters: recentSupporters,
+      },
+      message: 'User found',
+    };
 
-      // Extracting only the recent 5 supporters
-      const recentSupporters = supporters.slice(0, 5);
-  
-      // Creating the response object
-      const response = {
-        data: {
-          username,
-          membershipPrice: price,
-          description,
-          socials,
-          polls: myPolls,
-          posts: myPosts,
-          numberOfSupporters,
-          supporters: recentSupporters,
-        },
-        message: 'User found',
-      };
-  
-      return response;
-    } catch (error) {
-      // Handle errors here
-      console.error(`Error in getUser: ${error.message}`);
-      throw error; // Re-throw the error for the calling code to handle if needed
-    }
-  };
-  
-  
-
-
+    return response;
+  } catch (error) {
+    // Handle errors here
+    console.error(`Error in getUser: ${error.message}`);
+    throw error; // Re-throw the error for the calling code to handle if needed
+  }
+};
+    
 const name = async (req,res) => {
   const userId = req.user.id; 
   // console.log(userId);
@@ -221,7 +236,7 @@ const name = async (req,res) => {
     return res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 }
-
+  
 const description = async (req,res) => {
   // console.log('description function called');
   const userId = req.user.id; 
@@ -242,5 +257,5 @@ const description = async (req,res) => {
   }
 }
 
-module.exports = {register, login, image, name, description, getUser};
 
+module.exports = {register, login, image, creatorsTop, name, description, getUser};
