@@ -38,7 +38,6 @@ const UserController = {
       res.status(400).json({ message: err.message });
     }
   },
-<<<<<<< HEAD
   creatorsTop: async (req, res) => {
     try {
       console.log(req.body);
@@ -51,7 +50,6 @@ const UserController = {
     }
   },
 
-=======
 
   description: async (req, res) => {
     try {
@@ -72,7 +70,6 @@ const UserController = {
       res.status(400).json({ message: err });
     }
   },
->>>>>>> 64f549895a2055d2f2d792ce91fbe540f6c7176b
 };
 
 module.exports = UserController;

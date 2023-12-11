@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const {upload} = require('../utils/s3.utils');
 const jwtSevices = require('../utils/jwt.utils')
+
 const register = async ({ name, username, email, password }) => {
   const userExists = await User.findOne({ $or: [{ username }, { email }] });
   // console.log("userExists", userExists);
@@ -142,23 +143,119 @@ const image = async (req,res) => {
       console.error(error);
       return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  })};
+  })
+};
 
 
-  const creatorsTop = async (req, res) => {
-    try {
-      const result = await User.find({});
+const creatorsTop = async (req, res) => {
+  try {
+    const result = await User.find({});
 
-      const DataofTop10 = result.sort((a, b) => b.supporters.length - a.supporters.length).slice(0, 10);
+    const DataofTop10 = result.sort((a, b) => b.supporters.length - a.supporters.length).slice(0, 10);
 
-      return {
-        data : DataofTop10,
-        message: 'Top 10 creators'
-      };
-    } catch (err) {
-      throw err;
+    return {
+      data : DataofTop10,
+      message: 'Top 10 creators'
+    };
+  } catch (err) {
+    throw err;
+  }
+};  
+  
+  
+const getUser = async (req) => {
+  try {
+    const name = req.params.username;
+    const user = await User.findOne({ username: name });
+    
+    if (!user) {
+      throw new Error('User not found');
     }
-  };  
+
+    if(user._id == req.user.id){
+      return {
+        message: 'You cannot view your own profile',
+      };
+    }
+
+    // Extracting relevant fields from the user object
+    const {
+      username,
+      price,
+      description,
+      socials,
+      myPolls,
+      myPosts,
+      supporters,
+    } = user;
+    
+    // Extracting the number of supporters
+    const numberOfSupporters = supporters.length;
+
+    // Extracting only the recent 5 supporters
+    const recentSupporters = supporters.slice(0, 5);
+
+    // Creating the response object
+    const response = {
+      data: {
+        username,
+        membershipPrice: price,
+        description,
+        socials,
+        polls: myPolls,
+        posts: myPosts,
+        numberOfSupporters,
+        supporters: recentSupporters,
+      },
+      message: 'User found',
+    };
+
+    return response;
+  } catch (error) {
+    // Handle errors here
+    console.error(`Error in getUser: ${error.message}`);
+    throw error; // Re-throw the error for the calling code to handle if needed
+  }
+};
+    
+const name = async (req,res) => {
+  const userId = req.user.id; 
+  // console.log(userId);
+  const {name} = req.body;
+  // console.log(name);
+  try {
+    const result = await User.findByIdAndUpdate(userId, { name: name });
+    // console.log(result);
+    if (result) {
+      return res.json({ message: 'Name updated successfully.' });
+    } else {
+      return res.status(500).json({ message: 'Name update failed.' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+}
+  
+const description = async (req,res) => {
+  // console.log('description function called');
+  const userId = req.user.id; 
+  // console.log(userId);
+  const {description} = req.body;
+  // console.log(description);
+  try {
+    const result = await User.findByIdAndUpdate(userId, { description: description });
+    console.log(result);
+    if (result) {
+      return res.json({ message: 'Description updated successfully.' });
+    } else {
+      return res.status(500).json({ message: 'Description update failed.' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error', error: error.message });
+  }
+}
 
 
 module.exports = {register, login, image, creatorsTop, name, description, getUser};
