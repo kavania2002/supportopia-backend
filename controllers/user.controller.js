@@ -70,6 +70,14 @@ const UserController = {
       res.status(400).json({ message: err });
     }
   },
+  updateProfile: async (req, res) => {
+    try {
+      const result =  await userService.updateProfile(req);
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({message: error});
+    }
+  }
 };
 
 module.exports = UserController;

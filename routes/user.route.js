@@ -9,6 +9,7 @@ router.get('/creators/top', UserController.creatorsTop);
 router.post('/name', authenticateUser, UserController.name);
 router.post('/description', authenticateUser, UserController.description);
 router.post('/image', authenticateUser ,UserController.image);
+router.post('/update', authenticateUser, UserController.updateProfile)
 
 // if user not authorized then show limited information
 router.get('/:username', UserController.getUser);

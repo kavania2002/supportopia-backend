@@ -34,7 +34,7 @@ const register = async ({ name, username, email, password }) => {
       name: user.name,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "1h" }
+    { expiresIn: "30d" }
   );
 
   return {
@@ -91,7 +91,7 @@ const login = async (req) => {
             email: user.email,
           },
           process.env.JWT_SECRET,
-          { expiresIn: "1h" }
+          { expiresIn: "30d" }
         );
         req.user = user;
         return {
@@ -122,7 +122,7 @@ const login = async (req) => {
         email: user.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "30d" }
     );
     // console.log(newToken);
     console.log("New Token Generated");
@@ -207,11 +207,6 @@ const getUser = async (req) => {
       throw new Error("User not found");
     }
 
-    // if (user._id == req.user.id) {
-    //   return {
-    //     message: "You cannot view your own profile",
-    //   };
-    // }
     let isMember = false;
     
     const authHeader = req.headers.authorization;
@@ -224,6 +219,9 @@ const getUser = async (req) => {
         req.user = decoded;
         // console.log(decoded);
         const userId = req.user.id;
+        if (user._id == req.user.id) {
+          isMember = true;
+        }
         if (user.supporters.includes(userId)) {
           isMember = true;
         }
@@ -319,6 +317,36 @@ const description = async (req, res) => {
   }
 };
 
+const updateProfile = async (req) => {
+  const userId = req.user.id;
+
+  const {name, description, socials, price} = req.body;
+
+  try {
+    const result = await User.findByIdAndUpdate(userId, {
+      name: name,
+      description: description,
+      price: price,
+      socials : socials
+    })
+
+    if (result) {
+      return {
+        message: 'Profile Updated'
+      }
+    } else {
+      return {
+        message: 'Error Updating Profile'
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    return {
+      message: error
+    }
+  }
+}
+
 module.exports = {
   register,
   login,
@@ -327,4 +355,5 @@ module.exports = {
   name,
   description,
   getUser,
+  updateProfile
 };
