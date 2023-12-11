@@ -216,9 +216,11 @@ const getUser = async (req) => {
         if (user._id == req.user.id) {
           isMember = true;
         }
-        if (user.supporters.includes(userId)) {
-          isMember = true;
-        }
+        user.supporters.forEach((supporter) => {
+          if (supporter.userId == req.user.id) {
+            isMember = true;
+          }
+        });
       } catch (err) {
         console.error(err);
       }
@@ -344,8 +346,14 @@ const updateProfile = async (req) => {
 const creatorStats = async (userId) => {
   try {
     const creator = await User.findById(userId)
-      .populate({ path: "supporters", populate: { path: "userId", select: '_id name username email description imageUrl' } })
-      .populate({ path: "mySupports", select: 'price number' });
+      .populate({
+        path: "supporters",
+        populate: {
+          path: "userId",
+          select: "_id name username email description imageUrl",
+        },
+      })
+      .populate({ path: "mySupports", select: "price number" });
 
     let creatorInfo = {
       name: creator.name,
