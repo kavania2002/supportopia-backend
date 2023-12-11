@@ -21,9 +21,7 @@ const PostService = {
       };
     } catch (error) {
       console.error(error);
-      return {
-        message: error,
-      };
+      throw new Error(error);
     }
   },
 };
