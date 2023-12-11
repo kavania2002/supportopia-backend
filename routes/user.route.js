@@ -9,6 +9,8 @@ router.get('/creators/top', UserController.creatorsTop);
 router.post('/name', authenticateUser, UserController.name);
 router.post('/description', authenticateUser, UserController.description);
 router.post('/image', authenticateUser ,UserController.image);
-router.get('/:username', authenticateUser, UserController.getUser);
+
+// if user not authorized then show limited information
+router.get('/:username', UserController.getUser);
 
 module.exports = router;
