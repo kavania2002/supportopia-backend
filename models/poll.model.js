@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
 const pollSchema = new mongoose.Schema({
-    creatorId: { type: mongoose.Types.ObjectId },
+    creatorId: { type: mongoose.Schema.Types.ObjectId },
     questions: [String],
     votes: [
         [
-            { type: mongoose.Types.ObjectId }
+            { type: mongoose.Schema.Types.ObjectId }
         ]
     ]
 })

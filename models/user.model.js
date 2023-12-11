@@ -19,9 +19,9 @@ const userSchema = new mongoose.Schema({
         "youtube": String,
         "instagram": String
     }],
-    myPosts: [{ type: mongoose.Types.ObjectId }],
-    myPolls: [{ type: mongoose.Types.ObjectId }],
-    polledTo: [{ type: mongoose.Types.ObjectId }]
+    myPosts: [{ type: mongoose.Schema.Types.ObjectId }],
+    myPolls: [{ type: mongoose.Schema.Types.ObjectId }],
+    polledTo: [{ type: mongoose.Schema..Types.ObjectId }]
 })
 
 module.exports = new mongoose.model("User", userSchema)
