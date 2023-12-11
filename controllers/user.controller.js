@@ -71,9 +71,9 @@ const UserController = {
   },
   updateProfile: async (req, res) => {
     try {
-      const result = await userService.updateProfile(req);
-      res.json(result);
+      await userService.updateProfile(req, res);
     } catch (error) {
+      console.error(error);
       res.status(400).json({ message: error });
     }
   },

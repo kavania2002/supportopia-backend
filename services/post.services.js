@@ -5,6 +5,7 @@ const PostService = {
   addPost: async (userId, data) => {
     try {
       const newPost = new Post({
+        title: data.title,
         creatorId: userId,
         description: data.description,
       });

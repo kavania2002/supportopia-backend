@@ -331,34 +331,46 @@ const description = async (req, res) => {
   }
 };
 
-const updateProfile = async (req) => {
+const updateProfile = async (req, res) => {
   const userId = req.user.id;
 
-  const { name, description, socials, price } = req.body;
-
-  try {
-    const result = await User.findByIdAndUpdate(userId, {
-      name: name,
-      description: description,
-      price: price,
-      socials: socials,
-    });
-
-    if (result) {
+  upload.single("image")(req, res, async (err) => {
+    if (err) {
+      console.error(err);
       return {
-        message: "Profile Updated",
-      };
-    } else {
-      return {
-        message: "Error Updating Profile",
+        message: err,
+        error: "Image Upload Failed",
       };
     }
-  } catch (error) {
-    console.error(error);
-    return {
-      message: error,
-    };
-  }
+
+    const image_url = req.file.location;
+    const { name, description, socials, price } = req.body;
+
+    try {
+      const result = await User.findByIdAndUpdate(userId, {
+        name: name,
+        description: description,
+        price: price,
+        socials: socials,
+        imageUrl: image_url,
+      });
+      if (result) {
+        return res.json({
+          message: "Profile Updated",
+        });
+      } else {
+        return res.status(500).json({
+          message: "Error Updating Profile",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        message: "Internal Server error",
+        error: error.message,
+      });
+    }
+  });
 };
 
 const creatorStats = async (userId) => {
