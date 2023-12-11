@@ -8,9 +8,21 @@ const userSchema = new mongoose.Schema({
     description: String,
     imageUrl: String,
     price: Number,
-    supporters: [],
-    supportedenvTo: [],
+
+    // list of supporters supporting me with their expiry of support
+    supporters: [
+        {
+            "userId": {type: mongoose.Schema.Types.ObjectId},
+            "expiry": Date
+        }
+    ],
+
+    // list of creators the person has supportedTo
+    supportedTo: [],
+
+    // all the transactions done on creator itself
     mySupports: [],
+    
     socials: {
         "twitter": String,
         "pinterest": String,

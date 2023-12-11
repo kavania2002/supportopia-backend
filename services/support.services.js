@@ -7,11 +7,15 @@ const jwtSevices = require('../utils/jwt.utils')
 const {ObjectId} = require('mongodb');
 const e = require('express');
 
-const addSuppoter = async (data) => {
-    const {supportedTo, supportedBy,name, message,number} = data;
-    console.log(data);
-    console.log(supportedTo, supportedBy,name, message,number);
-    console.log(11);
+const addSuppoter = async (req) => {
+    const {supportedTo,name, message,number} = req.body;
+    const supportedBy = req.user.id;
+
+    function addMonthsToDate(currentDate, monthsToAdd) {
+        var newDate = new Date(currentDate);        
+        newDate.setMonth(newDate.getMonth() + monthsToAdd);
+        return newDate;
+      }
 
     const newSupporter = new Support({
         supportedTo,
@@ -22,51 +26,49 @@ const addSuppoter = async (data) => {
     })
 
     let supporterTran =  await newSupporter.save().then((supporterTran,err) => {
-            console.log(err,supporterTran)
             if (err) {
                 throw "server error"
             }
-            console.log(supporterTran);
             return supporterTran;
         })
         
-    console.log(supporterTran);
- 
 
     let user = await User.findOne({_id:supportedTo});
-    console.log(user);
     let check = false;
+    let currentDate = new Date();
     for(let i=0; i<user.supporters.length; i++){
-        if(user.supporters[i].supportedBy == supportedBy){
+        if(user.supporters[i].userId == supportedBy){
             check = true;
+            currentDate = user.supporters[i].expiry;
+
+            // change the expiry
+            user.supporters[i].expiry = addMonthsToDate(currentDate, number);
             break;
         }
     } 
-    console.log("start");
-    console.log(check);
     if(check == false){
         user.supporters.push({
-            supportedBy
+            "userId" : supportedBy,
+            "expiry": addMonthsToDate(currentDate, number)
         })
         
-        user.mySupports.push({"transition":supporterTran._id});
+        user.mySupports.push(supporterTran._id);
         await user.save();
 
         const supportedUser = await User.findById(supportedBy); 
-        supportedUser.supportedenvTo.push({"supportedTo" : supporterTran._id});
-        console.log(supportedUser);
+        supportedUser.supportedTo.push(supportedTo);
 
         await supportedUser.save();
 
     }
     else
     {
-        user.mySupports.push({"transition":supporterTran._id});
+        user.mySupports.push(supporterTran._id);
         await user.save();
     }
     return {
         data: {
-            supportObject:supporterTran 
+            support: supporterTran 
         },
         message: 'Supported'
     }
