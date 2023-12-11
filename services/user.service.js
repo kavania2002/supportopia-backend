@@ -246,6 +246,7 @@ const getUser = async (req) => {
 
     // Extracting relevant fields from the user object
     const {
+      name,
       username,
       price,
       description,
@@ -264,6 +265,7 @@ const getUser = async (req) => {
     // Creating the response object
     const response = {
       data: {
+        name,
         username,
         membershipPrice: price,
         description,
