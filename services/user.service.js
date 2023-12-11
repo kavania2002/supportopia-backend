@@ -203,13 +203,13 @@ const getUser = async (req) => {
         path: "myPosts",
         populate: {
           path: "comments",
-        }
+        },
       })
       .populate({
         path: "supporters",
         populate: {
           path: "userId",
-          select: "_id name username email imageUrl"
+          select: "_id name username email imageUrl",
         },
       });
 
@@ -379,7 +379,7 @@ const creatorStats = async (userId) => {
       description: creator.description,
       imageUrl: creator.imageUrl,
       price: creator.price,
-      socials: creator.socials, 
+      socials: creator.socials,
       supporters: creator.supporters,
       numberOfCoffee: creator.mySupports.length,
       totalMembers: creator.supporters.length,
