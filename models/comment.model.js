@@ -1,9 +1,8 @@
 const mongoose = require('mongoose')
 
 const commentSchema = new mongoose.Schema({
-    commentedOn: { type: mongoose.Schema.Types.ObjectId },
-    commentedBy: { type: mongoose.Schema.Types.ObjectId },
-    postId: { type: mongoose.Schema.Typesypes.ObjectId },
+    commentedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    postId: { type: mongoose.Schema.Typesypes.ObjectId, ref: 'Post' },
     description: String
 }, {
     timestamps: {

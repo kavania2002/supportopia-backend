@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
 const postSchema = new mongoose.Schema({
-    creatorId: { type: mongoose.Schema.Types.ObjectId },
-    comments: [{ type: mongoose.Schema.Types.ObjectId }],
+    creatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
     description: String,
 },
     {
