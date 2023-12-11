@@ -194,8 +194,8 @@ const getLimitedUserDetails = async (user) => {
 
 const getUser = async (req) => {
   try {
-    const name = req.params.username;
-    const user = await User.findOne({ username: name })
+    const nameParams = req.params.username;
+    const user = await User.findOne({ username: nameParams })
       .populate({
         path: "myPolls",
       })
