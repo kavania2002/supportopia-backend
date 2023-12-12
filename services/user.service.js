@@ -360,7 +360,7 @@ const updateProfile = async (req, res) => {
         name: name,
         description: description,
         price: price,
-        socials: socials,
+        socials: JSON.parse(socials),
         imageUrl: image_url,
       });
       if (result) {
