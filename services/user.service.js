@@ -206,10 +206,10 @@ const getUser = async (req) => {
         },
       })
       .populate({
-        path: "supporters",
+        path: "mySupports",
         populate: {
-          path: "userId",
-          select: "_id name username email imageUrl",
+          path: "supportedBy",
+          select: "name description imageUrl username"
         },
       });
 
@@ -254,14 +254,15 @@ const getUser = async (req) => {
       socials,
       myPolls,
       myPosts,
+      mySupports,
       supporters,
     } = user;
 
     // Extracting the number of supporters
     const numberOfSupporters = supporters.length;
 
-    // Extracting only the recent 5 supporters
-    const recentSupporters = supporters.slice(0, 5);
+    // Extracting only the recent 5 supports
+    const recentSupports = mySupports.slice(0, 5);
 
     // Creating the response object
     const response = {
@@ -275,7 +276,7 @@ const getUser = async (req) => {
         polls: isMember ? myPolls : [],
         posts: isMember ? myPosts : [],
         numberOfSupporters,
-        supporters: recentSupporters,
+        supports: recentSupports,
       },
       message: "User found",
     };
