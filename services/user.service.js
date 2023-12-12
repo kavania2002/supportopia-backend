@@ -203,13 +203,17 @@ const getUser = async (req) => {
         path: "myPosts",
         populate: {
           path: "comments",
+          populate: {
+            path: "commentedBy",
+            select: "username name email description",
+          },
         },
       })
       .populate({
         path: "mySupports",
         populate: {
           path: "supportedBy",
-          select: "name description imageUrl username"
+          select: "name description imageUrl username",
         },
       });
 
@@ -262,7 +266,7 @@ const getUser = async (req) => {
     const numberOfSupporters = supporters.length;
 
     // Extracting only the recent 5 supports
-    const latestFiveSupports = mySupports.slice(-5)
+    const latestFiveSupports = mySupports.slice(-5);
     const recentSupports = latestFiveSupports.reverse();
 
     // Creating the response object
