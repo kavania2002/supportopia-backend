@@ -353,6 +353,7 @@ const updateProfile = async (req, res) => {
 
     const image_url = req.file.location;
     const { name, description, socials, price } = req.body;
+    console.log(image_url);
 
     try {
       const result = await User.findByIdAndUpdate(userId, {
