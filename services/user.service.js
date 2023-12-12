@@ -262,7 +262,8 @@ const getUser = async (req) => {
     const numberOfSupporters = supporters.length;
 
     // Extracting only the recent 5 supports
-    const recentSupports = mySupports.slice(0, 5);
+    const latestFiveSupports = mySupports.slice(-5)
+    const recentSupports = latestFiveSupports.reverse();
 
     // Creating the response object
     const response = {
