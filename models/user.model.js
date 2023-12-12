@@ -1,13 +1,17 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  name: {type: String, default: ""},
+  name: { type: String, default: "Lorem Ipsum" },
   username: String,
   email: String,
   password: String,
-  description: String,
-  imageUrl: {type: String, default: ""},
-  price: {type: Number, default: 0},
+  description: {
+    type: String,
+    default:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer eu imperdiet augue, ac viverra sapien. Proin auctor pellentesque velit, vitae placerat velit imperdiet ac. Sed fermentum, ipsum id hendrerit porta, mauris ex ultricies ex, ut elementum nunc enim sit amet metus. Proin feugiat, mi sagittis sodales lacinia, libero nisl dapibus. ",
+  },
+  imageUrl: { type: String, default: "" },
+  price: { type: Number, default: 25 },
 
   // list of supporters supporting me with their expiry of support
   supporters: [
