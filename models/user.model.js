@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  name: String,
+  name: {type: String, default: ""},
   username: String,
   email: String,
   password: String,
   description: String,
-  imageUrl: String,
-  price: Number,
+  imageUrl: {type: String, default: ""},
+  price: {type: Number, default: 0},
 
   // list of supporters supporting me with their expiry of support
   supporters: [
